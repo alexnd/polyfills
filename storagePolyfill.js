@@ -157,14 +157,14 @@ const storagePolyfill = {
 
                 // Replace window.localStorage and window.sessionStorage with our custom implementation.
                 var localStorage, sessionStorage;
-                if (inMemory) {
-                    if (storagePolyfill.verbose) console.log('#storagePolyfill.apply Storage');
-                    localStorage = new Storage('local');
-                    sessionStorage = new Storage('session');
-                } else {
+                if (storagePolyfill.inMemory) {
                     if (storagePolyfill.verbose) console.log('#storagePolyfill.apply MemoryStorage');
                     localStorage = new MemoryStorage();
                     sessionStorage = new MemoryStorage();
+                } else {
+                    if (storagePolyfill.verbose) console.log('#storagePolyfill.apply Storage');
+                    localStorage = new Storage('local');
+                    sessionStorage = new Storage('session');
                 }
                 try {
                     window.localStorage = localStorage;
@@ -172,9 +172,9 @@ const storagePolyfill = {
                     // For Safari private browsing need to also set the proto value.
                     window.localStorage.__proto__ = localStorage;
                     window.sessionStorage.__proto__ = sessionStorage;
-                    if (storagePolyfill.verbose) console.error('#storagePolyfill.applied');
+                    if (storagePolyfill.verbose) console.log('#storagePolyfill.applied');
                 } catch (e) {
-                    if (storagePolyfill.verbose) console.error('#storagePolyfill.applied');
+                    if (storagePolyfill.verbose) console.error('#storagePolyfill.error', e);
                 }
             })();
         }
